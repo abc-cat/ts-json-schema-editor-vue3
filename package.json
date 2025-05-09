@@ -15,8 +15,8 @@
     "url": "https://github.com/abc-cat/ts-json-schema-editor-vue3/tree/master"
   },
   "license": "MIT",
-  "main": "dist/ts-json-schema-editor-vue3.umd.js",
-  "module": "dist/ts-json-schema-editor-vue3.es.js",
+  "main": "dist/vue3-json-schema-editor-ts.umd.js",
+  "module": "dist/vue3-json-schema-editor-ts.es.js",
   "files": [
     "dist"
   ],

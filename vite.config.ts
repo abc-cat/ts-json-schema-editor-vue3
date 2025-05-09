@@ -17,7 +17,7 @@ export default defineConfig({
         lib: {
             entry: path.resolve(__dirname, 'packages/index.ts'),
             name: 'TsJsonSchemaEditorVue3',
-            fileName: (format) => `ts-json-schema-editor-vue3.${format}.js`
+            fileName: (format) => `vue3-json-schema-editor-ts.${format}.js`
         },
         rollupOptions: {
             external: ['vue'],
