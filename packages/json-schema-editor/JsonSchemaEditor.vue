@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { defineProps, ref, computed,  defineExpose } from 'vue';
-import { isNull, renamePropertyAndKeepKeyPrecedence } from './util';
-import { TYPE_NAME, TYPE, ITypeMap } from './type/type';
+import { defineProps, ref, computed, defineExpose } from "vue";
+import { isNull, renamePropertyAndKeepKeyPrecedence } from "./util";
+import { TYPE_NAME, TYPE, ITypeMap } from "./type/type";
 import {
-    SelectOption as ASelectOption,
-    Textarea as ATextarea,
+  SelectOption as ASelectOption,
+  Textarea as ATextarea,
   FormItem as AFormItem,
   Switch as ASwitch,
   Checkbox as ACheckbox,
@@ -13,85 +13,115 @@ import {
   Form as AForm,
   Button as AButton,
   Modal as AModal,
-  Input as AInput, Select as ASelect, Tooltip as ATooltip, InputNumber as AInputNumber,
-} from 'ant-design-vue';
-import {CheckboxChangeEvent} from "ant-design-vue/lib/checkbox/interface";
-import { CaretRightOutlined, CaretDownOutlined, SettingOutlined, PlusOutlined, CloseOutlined, CheckOutlined } from '@ant-design/icons-vue';
-import {LangsMap} from './LocalProvider';
-import LocalProvider from './LocalProvider';
+  Input as AInput,
+  Select as ASelect,
+  Tooltip as ATooltip,
+  InputNumber as AInputNumber,
+} from "ant-design-vue";
+import { CheckboxChangeEvent } from "ant-design-vue/lib/checkbox/interface";
+import {
+  CaretRightOutlined,
+  CaretDownOutlined,
+  SettingOutlined,
+  PlusOutlined,
+  CloseOutlined,
+  CheckOutlined,
+} from "@ant-design/icons-vue";
+import { LangsMap } from "./LocalProvider";
+import LocalProvider from "./LocalProvider";
 
 const props = defineProps({
   value: {
     type: Object,
-    required:true
+    required: true,
   },
-  disabled: { //name不可编辑，根节点name不可编辑,数组元素name不可编辑
+  disabled: {
+    //name不可编辑，根节点name不可编辑,数组元素name不可编辑
     type: Boolean,
-    default: false
+    default: false,
   },
-  disabledType: { //禁用类型选择
+  disabledType: {
+    //禁用类型选择
     type: Boolean,
-    default: false
+    default: false,
   },
-  isItem: { //是否数组元素
+  isItem: {
+    //是否数组元素
     type: Boolean,
-    default: false
+    default: false,
   },
-  deep: { // 节点深度，根节点deep=0
-    type:Number,
-    default: 0
+  deep: {
+    // 节点深度，根节点deep=0
+    type: Number,
+    default: 0,
   },
-  root: { //是否root节点
-    type:Boolean,
-    default:true
+  root: {
+    //是否root节点
+    type: Boolean,
+    default: true,
   },
   parent: {
     type: Object,
-    default: null
+    default: null,
   },
-  custom: { //enable custom properties
+  custom: {
+    //enable custom properties
     type: Boolean,
-    default: false
+    default: false,
   },
   lang: {
-    type: String as ()=>keyof LangsMap,
-    default: 'zh_CN'
-  }
+    type: String as () => keyof LangsMap,
+    default: "zh_CN",
+  },
 });
 
 const hidden = ref(false);
 const modalVisible = ref(false);
 const advancedValue = ref({});
-const addProp = ref({ key: '', value: '' });
+const addProp = ref({ key: "", value: "" });
 const customProps = ref<{ key: string; value: unknown }[]>([]);
 const customing = ref(false);
 const countAdd = ref(1);
 
-
 const local = computed(() => LocalProvider(props.lang));
 
-const pickValue = computed(() => Object.values(props.value)[0] as {
-  type: keyof ITypeMap;
-  title?: string;
-  properties?: Record<string, unknown>;
-  items?: { type: string; [key: string]: unknown };
-});
+const pickValue = computed(
+  () =>
+    Object.values(props.value)[0] as {
+      type: keyof ITypeMap;
+      title?: string;
+      properties?: Record<string, unknown>;
+      items?: { type: string; [key: string]: unknown };
+    }
+);
 
 const pickKey = computed(() => Object.keys(props.value)[0]);
 
-const isObject = computed(() => pickValue.value.type === 'object');
+const isObject = computed(() => pickValue.value.type === "object");
 
-const isArray = computed(() => pickValue.value.type === 'array');
+const isArray = computed(() => pickValue.value.type === "array");
 
-const checked = computed(() => props.parent && props.parent.required && props.parent.required.includes(pickKey.value));
+const checked = computed(
+  () =>
+    props.parent &&
+    props.parent.required &&
+    props.parent.required.includes(pickKey.value)
+);
 
 const advanced = computed(() => TYPE[pickValue.value.type]);
 
 const advancedAttr = computed(() => {
-  return TYPE[pickValue.value.type].attr
+  return TYPE[pickValue.value.type].attr;
 });
 
-const ownProps = computed(() => ['type', 'title', 'properties', 'items', 'required', ...Object.keys(advancedAttr.value)]);
+const ownProps = computed(() => [
+  "type",
+  "title",
+  "properties",
+  "items",
+  "required",
+  ...Object.keys(advancedAttr.value),
+]);
 
 const advancedNotEmptyValue = computed(() => {
   const jsonNode = { ...advancedValue.value } as Record<string, unknown>;
@@ -111,24 +141,30 @@ const completeNodeValue = computed(() => {
   }
   // Assuming _pickDiffKey is a method to filter out keys not in ownProps
   const diffKeys = _pickDiffKey(); // You need to implement _pickDiffKey logic accordingly
-  diffKeys.forEach(key => delete basicValue[key]);
+  diffKeys.forEach((key) => delete basicValue[key]);
   return { ...basicValue, ...t, ...advancedNotEmptyValue.value };
 });
 
-const enumText = computed(() => {
-  // 使用 as 断言来访问 enum 属性
-  const t = (advancedValue.value as { enum?: string[] })['enum'];
-  if (!t) return '';
-  if (!t.length) return '';
-  return t.join('\n');
-});
+// const enumText = computed(() => {
+//   // 使用 as 断言来访问 enum 属性
+//   const t = (advancedValue.value as { enum?: string[] })['enum'];
+//   if (!t) return '';
+//   if (!t.length) return '';
+//   return t.join('\n');
+// });
 
+const getEnumText = () => {
+  const t = (advancedValue.value as { enum?: string[] })["enum"];
+  if (!t) return "";
+  if (!t.length) return "";
+  return t.join("\n");
+};
 
 // Methods
 const onInputName = (e: Event) => {
   const oldKey = pickKey.value;
   const newKey = (e.target as HTMLInputElement).value;
-  console.log(oldKey, newKey)
+  // console.log(oldKey, newKey);
   if (oldKey === newKey) return;
   renamePropertyAndKeepKeyPrecedence(props.parent.properties, [oldKey, newKey]);
 
@@ -145,19 +181,19 @@ const onInputName = (e: Event) => {
 const onChangeType = () => {
   parseCustomProps();
   const value = pickValue.value as Record<string, unknown>; // 临时断言为更宽泛的类型
-  customProps.value.forEach(item => {
+  customProps.value.forEach((item) => {
     delete value[item.key];
   });
   customProps.value = [];
 
-  delete value['properties'];
-  delete value['items'];
-  delete value['required'];
-  delete value['format'];
-  delete value['enum'];
+  delete value["properties"];
+  delete value["items"];
+  delete value["required"];
+  delete value["format"];
+  delete value["enum"];
 
   if (isArray.value) {
-    value['items'] = { type: 'string' };
+    value["items"] = { type: "string" };
   }
 };
 
@@ -172,48 +208,59 @@ const onRootCheck = (e: CheckboxChangeEvent) => {
 const changeEnumValue = (e: Event) => {
   const pickType = pickValue.value.type;
   const value = (e.target as HTMLInputElement).value;
-  const arr = value.split('\n');
+  const arr = value.split("\n");
 
   // 使用类型断言来临时将 advancedValue.value 视为一个更宽泛的类型
   const advancedValueTemp = advancedValue.value as Record<string, unknown>;
 
-  if (pickType === 'string') {
+  if (pickType === "string") {
     advancedValueTemp.enum = arr;
   } else {
-    advancedValueTemp.enum = arr.length === 0 || (arr.length === 1 && arr[0] === '') ? null : arr.map(item => parseFloat(item));
+    advancedValueTemp.enum =
+      arr.length === 0 || (arr.length === 1 && arr[0] === "")
+        ? null
+        : arr.map((item) => parseFloat(item));
   }
 };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const _deepCheck = (checked: boolean, node: any) => {
-  if (node.type === 'object' && node.properties) {
-    checked ? node['required'] = Object.keys(node.properties) : delete node['required'];
-    Object.keys(node.properties).forEach(key => _deepCheck(checked, node.properties[key]));
-  } else if (node.type === 'array' && node.items.type === 'object') {
-    checked ? node.items['required'] = Object.keys(node.items.properties) : delete node.items['required'];
-    Object.keys(node.items.properties).forEach(key => _deepCheck(checked, node.items.properties[key]));
+  if (node.type === "object" && node.properties) {
+    checked
+      ? (node["required"] = Object.keys(node.properties))
+      : delete node["required"];
+    Object.keys(node.properties).forEach((key) =>
+      _deepCheck(checked, node.properties[key])
+    );
+  } else if (node.type === "array" && node.items.type === "object") {
+    checked
+      ? (node.items["required"] = Object.keys(node.items.properties))
+      : delete node.items["required"];
+    Object.keys(node.items.properties).forEach((key) =>
+      _deepCheck(checked, node.items.properties[key])
+    );
   }
 };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const _checked = (checked: boolean, parent: any) => {
-  console.log(parent)
+  // console.log(parent);
   let required = parent.required;
   if (checked) {
-    required || (parent['required'] = []);
+    required || (parent["required"] = []);
     required = parent.required;
     required.indexOf(pickKey.value) === -1 && required.push(pickKey.value);
   } else {
     const pos = required.indexOf(pickKey.value);
     pos >= 0 && required.splice(pos, 1);
   }
-  required.length === 0 && delete parent['required'];
+  required.length === 0 && delete parent["required"];
 };
 
 const addChild = () => {
   const name = _joinName();
-  const type = 'string';
+  const type = "string";
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const node:any = pickValue.value;
-  node.properties || (node['properties'] = {});
+  const node: any = pickValue.value;
+  node.properties || (node["properties"] = {});
   const props = node.properties;
   props[name] = { type: type };
 };
@@ -221,7 +268,7 @@ const addChild = () => {
 const parseCustomProps = () => {
   const ownPropsVal = ownProps.value;
   const value = pickValue.value as Record<string, unknown>; // 临时断言为更宽泛的类型
-  Object.keys(pickValue.value).forEach(key => {
+  Object.keys(pickValue.value).forEach((key) => {
     if (ownPropsVal.indexOf(key) === -1) {
       confirmAddCustomNode({ key: key, value: value[key] });
     }
@@ -229,26 +276,26 @@ const parseCustomProps = () => {
 };
 
 const addCustomNode = () => {
-  addProp.value['key'] = _joinName();
-  addProp.value['value'] = '';
+  addProp.value["key"] = _joinName();
+  addProp.value["value"] = "";
   customing.value = true;
 };
 
 const removeCustomNode = (key: string) => {
-  customProps.value = customProps.value.filter(item => item.key !== key);
+  customProps.value = customProps.value.filter((item) => item.key !== key);
 };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const confirmAddCustomNode = (prop: any) => {
   const p = prop || addProp.value;
   let existKey = false;
-  customProps.value.forEach(item => {
+  customProps.value.forEach((item) => {
     if (item.key === p.key) {
       existKey = true;
     }
   });
   if (existKey) return;
   customProps.value.push(p);
-  addProp.value = { key: '', value: '' };
+  addProp.value = { key: "", value: "" };
   customing.value = false;
 };
 
@@ -259,7 +306,7 @@ const removeNode = () => {
     const pos = required.indexOf(pickKey.value);
     pos >= 0 && required.splice(pos, 1);
     // eslint-disable-next-line vue/no-mutating-props
-    required.length === 0 && delete props.parent['required'];
+    required.length === 0 && delete props.parent["required"];
   }
 };
 
@@ -276,16 +323,16 @@ const onSetting = () => {
   const value = pickValue.value as Record<string, unknown>;
 
   for (const k in advancedValueTemp) {
-    if (value[k] !== undefined) { // 使用 !== undefined 来确保即使值为 null 也能被复制过去
+    if (value[k] !== undefined) {
+      // 使用 !== undefined 来确保即使值为 null 也能被复制过去
       advancedValueTemp[k] = value[k];
     }
   }
 
-  console.log(advancedValueTemp); // 注意：现在我们操作的是断言后的变量
+  // console.log(advancedValueTemp); // 注意：现在我们操作的是断言后的变量
   modalVisible.value = true;
   parseCustomProps();
 };
-
 
 const handleOk = () => {
   modalVisible.value = false;
@@ -304,24 +351,22 @@ const handleOk = () => {
   }
 
   const diffKey = _pickDiffKey();
-  diffKey.forEach(key => delete pickValueTemp[key]);
+  diffKey.forEach((key) => delete pickValueTemp[key]);
 
   for (const item of customProps.value) {
     pickValueTemp[item.key] = item.value;
   }
 };
 
-
 const _pickDiffKey = () => {
   const keys = Object.keys(pickValue.value);
-  return keys.filter(item => ownProps.value.indexOf(item) === -1);
+  return keys.filter((item) => ownProps.value.indexOf(item) === -1);
 };
 //eslint-disable-next-line @typescript-eslint/no-explicit-any
-function  debug(obj1:any,obj2:any){
-  console.log(obj1,obj2)
-  return false
-}
-
+// function debug(obj1: any, obj2: any) {
+//   console.log(obj1, obj2);
+//   return false;
+// }
 
 defineExpose({
   onInputName,
@@ -340,7 +385,7 @@ defineExpose({
   _joinName,
   onSetting,
   handleOk,
-  _pickDiffKey
+  _pickDiffKey,
 });
 </script>
 
@@ -349,100 +394,216 @@ defineExpose({
     <ARow class="row" :gutter="10">
       <ACol :span="8" class="ant-col-name">
         <div :style="{ marginLeft: `${20 * deep}px` }" class="ant-col-name-c">
-          <AButton v-if="pickValue.type === 'object'" type="link" style="color: rgba(0, 0, 0, .65)" @click="hidden = !hidden">
+          <AButton
+            v-if="pickValue.type === 'object'"
+            type="link"
+            style="color: rgba(0, 0, 0, 0.65)"
+            @click="hidden = !hidden"
+          >
             <template #icon>
-              <caret-right-outlined v-if="hidden"/>
-              <caret-down-outlined v-else/>
+              <caret-right-outlined v-if="hidden" />
+              <caret-down-outlined v-else />
             </template>
           </AButton>
-          <span v-else style="width: 32px; display: inline-block;"></span>
-          <AInput :disabled="disabled || root" :default-value="pickKey" class="ant-col-name-input" @blur="onInputName" :key="pickValue"/>
+          <span v-else style="width: 32px; display: inline-block"></span>
+          <AInput
+            :disabled="disabled || root"
+            :default-value="pickKey"
+            class="ant-col-name-input"
+            @blur="onInputName"
+            :key="pickValue"
+          />
         </div>
         <ATooltip v-if="root">
-          <template v-slot:title>{{ local['checked_all'] }}</template>
-          <ACheckbox :disabled="!isObject && !isArray" class="ant-col-name-required" @change="onRootCheck"/>
+          <template v-slot:title>{{ local["checked_all"] }}</template>
+          <ACheckbox
+            :disabled="!isObject && !isArray"
+            class="ant-col-name-required"
+            @change="onRootCheck"
+          />
         </ATooltip>
         <ATooltip v-else>
-          <template v-slot:title>{{ local['required'] }}</template>
-          <ACheckbox :disabled="isItem" :checked="checked" class="ant-col-name-required" @change="onCheck"/>
+          <template v-slot:title>{{ local["required"] }}</template>
+          <ACheckbox
+            :disabled="isItem"
+            :checked="checked"
+            class="ant-col-name-required"
+            @change="onCheck"
+          />
         </ATooltip>
       </ACol>
       <ACol :span="4">
-        <ASelect v-model:value="pickValue.type" :disabled="disabledType" class="ant-col-type" @change="onChangeType" :getPopupContainer="triggerNode => triggerNode.parentNode || document.body">
-          <ASelectOption :key="t" v-for="t in TYPE_NAME" :value="t">{{ t }}</ASelectOption>
+        <ASelect
+          v-model:value="pickValue.type"
+          :disabled="disabledType"
+          class="ant-col-type"
+          @change="onChangeType"
+          :getPopupContainer="
+            (triggerNode) => triggerNode.parentNode || document.body
+          "
+        >
+          <ASelectOption :key="t" v-for="t in TYPE_NAME" :value="t">{{
+            t
+          }}</ASelectOption>
         </ASelect>
       </ACol>
       <ACol :span="6">
-        <AInput v-model:value="pickValue.title" class="ant-col-title" :placeholder="local['title']"/>
+        <AInput
+          v-model:value="pickValue.title"
+          class="ant-col-title"
+          :placeholder="local['title']"
+        />
       </ACol>
       <ACol :span="6" class="ant-col-setting">
         <ATooltip>
-          <template v-slot:title>{{ local['adv_setting'] }}</template>
+          <template v-slot:title>{{ local["adv_setting"] }}</template>
           <AButton type="link" class="setting-icon" @click="onSetting">
             <template #icon><setting-outlined /></template>
           </AButton>
         </ATooltip>
         <ATooltip v-if="isObject">
-          <template v-slot:title>{{ local['add_child_node'] }}</template>
+          <template v-slot:title>{{ local["add_child_node"] }}</template>
           <AButton type="link" class="plus-icon" @click="addChild">
             <template #icon><plus-outlined /></template>
           </AButton>
         </ATooltip>
         <ATooltip v-if="!root && !isItem">
-          <template v-slot:title>{{ local['remove_node'] }}</template>
-          <AButton type="link" class="close-icon ant-btn-icon-only" @click="removeNode">
+          <template v-slot:title>{{ local["remove_node"] }}</template>
+          <AButton
+            type="link"
+            class="close-icon ant-btn-icon-only"
+            @click="removeNode"
+          >
             <close-outlined />
           </AButton>
         </ATooltip>
       </ACol>
     </ARow>
     <template v-if="!hidden && pickValue.properties && !isArray">
-      <json-schema-editor v-for="(item, key, index) in pickValue.properties" :value="{ [key]: item }" :parent="pickValue" :key="index" :deep="deep + 1" :root="false" class="children" :lang="lang" :custom="custom"/>
+      <json-schema-editor
+        v-for="(item, key, index) in pickValue.properties"
+        :value="{ [key]: item }"
+        :parent="pickValue"
+        :key="index"
+        :deep="deep + 1"
+        :root="false"
+        class="children"
+        :lang="lang"
+        :custom="custom"
+      />
     </template>
     <template v-if="isArray">
-      <json-schema-editor :value="{ items: pickValue.items }" :deep="deep + 1" disabled isItem :root="false" class="children" :lang="lang" :custom="custom"/>
+      <json-schema-editor
+        :value="{ items: pickValue.items }"
+        :deep="deep + 1"
+        disabled
+        isItem
+        :root="false"
+        class="children"
+        :lang="lang"
+        :custom="custom"
+      />
     </template>
-    <a-modal v-model:visible="modalVisible" v-if="modalVisible" :title="local['adv_setting']" :maskClosable="false" :okText="local['ok']" :cancelText="local['cancel']" width="800px" @ok="handleOk" wrapClassName="json-schema-editor-advanced-modal">
-      <h3>{{ local['base_setting'] }}</h3>
+    <a-modal
+      v-model:visible="modalVisible"
+      v-if="modalVisible"
+      :title="local['adv_setting']"
+      :maskClosable="false"
+      :okText="local['ok']"
+      :cancelText="local['cancel']"
+      width="800px"
+      @ok="handleOk"
+      wrapClassName="json-schema-editor-advanced-modal"
+    >
+      <h3>{{ local["base_setting"] }}</h3>
       <AForm :model="advancedValue" class="ant-advanced-search-form">
         <ARow :gutter="6">
           <ACol :span="8" v-for="(item, key) in advancedValue" :key="key">
             <AFormItem>
               <span>{{ local[key] }}</span>
-              <AInput-number v-model:value="advancedValue[key]" v-if="debug(key,advancedValue[key]) || advancedAttr[key].type === 'integer' || advancedAttr[key].type === 'number'" style="width: 100%" :placeholder="key"/>
-              <span v-else-if="advancedAttr[key].type === 'boolean'" style="display: inline-block; width: 100%">
-                <a-switch v-model:checked="advancedValue[key]"/>
+              <AInput-number
+                v-model:value="advancedValue[key]"
+                v-if="
+                  // debug(key, advancedValue[key]) ||
+                  advancedAttr[key].type === 'integer' ||
+                  advancedAttr[key].type === 'number'
+                "
+                style="width: 100%"
+                :placeholder="key"
+              />
+              <span
+                v-else-if="advancedAttr[key].type === 'boolean'"
+                style="display: inline-block; width: 100%"
+              >
+                <a-switch v-model:checked="advancedValue[key]" />
               </span>
-              <ATextarea @blur="changeEnumValue" v-model:value="enumText" :rows="2" v-else-if="key === 'enum'" :placeholder="local['enum_msg']"></ATextarea>
-              <ASelect v-else-if="advancedAttr[key].type === 'array'" v-model:value="advancedValue[key]" style="width: 100%" :getPopupContainer="triggerNode => triggerNode.parentNode || document.body" :placeholder="local[key]">
-                <ASelectOption value="">{{ local['nothing'] }}</ASelectOption>
-                <ASelectOption :key="t" v-for="t in advancedAttr[key].enums" :value="t">{{ t }}</ASelectOption>
+              <ATextarea
+                @blur="changeEnumValue"
+                :value="getEnumText()"
+                :rows="2"
+                v-else-if="key === 'enum'"
+                :placeholder="local['enum_msg']"
+              ></ATextarea>
+              <ASelect
+                v-else-if="advancedAttr[key].type === 'array'"
+                v-model:value="advancedValue[key]"
+                style="width: 100%"
+                :getPopupContainer="
+                  (triggerNode) => triggerNode.parentNode || document.body
+                "
+                :placeholder="local[key]"
+              >
+                <ASelectOption value="">{{ local["nothing"] }}</ASelectOption>
+                <ASelectOption
+                  :key="t"
+                  v-for="t in advancedAttr[key].enums"
+                  :value="t"
+                  >{{ t }}</ASelectOption
+                >
               </ASelect>
-              <AInput v-model:value="advancedValue[key]" v-else style="width: 100%" :placeholder="key"/>
+              <AInput
+                v-model:value="advancedValue[key]"
+                v-else
+                style="width: 100%"
+                :placeholder="key"
+              />
             </AFormItem>
           </ACol>
         </ARow>
       </AForm>
-      <h3 v-show="custom">{{ local['add_custom'] }}</h3>
+      <h3 v-show="custom">{{ local["add_custom"] }}</h3>
       <AForm class="ant-advanced-search-form" v-show="custom">
         <ARow :gutter="6">
           <ACol :span="8" v-for="item in customProps" :key="item.key">
             <AFormItem :label="item.key">
-              <AInput v-model:value="item.value" style="width: calc(100% - 30px)"/>
-              <AButton type="link" @click="removeCustomNode(item.key)" style="width: 30px">
+              <AInput
+                v-model:value="item.value"
+                style="width: calc(100% - 30px)"
+              />
+              <AButton
+                type="link"
+                @click="removeCustomNode(item.key)"
+                style="width: 30px"
+              >
                 <close-outlined />
               </AButton>
             </AFormItem>
           </ACol>
           <ACol :span="8" v-show="addProp.key !== undefined">
             <AFormItem>
-              <template #label><AInput v-model:value="addProp.key" style="width: 100px"/></template>
-              <AInput v-model:value="addProp.value" style="width: 100%"/>
+              <template #label
+                ><AInput v-model:value="addProp.key" style="width: 100px"
+              /></template>
+              <AInput v-model:value="addProp.value" style="width: 100%" />
             </AFormItem>
           </ACol>
           <ACol :span="8">
             <AFormItem>
-              <AButton type="link" @click="confirmAddCustomNode(null)" v-if="customing">
+              <AButton
+                type="link"
+                @click="confirmAddCustomNode(null)"
+                v-if="customing"
+              >
                 <check-outlined />
               </AButton>
               <ATooltip :title="local['add_custom']" v-else>
@@ -454,12 +615,11 @@ defineExpose({
           </ACol>
         </ARow>
       </AForm>
-      <h3>{{ local['preview'] }}</h3>
+      <h3>{{ local["preview"] }}</h3>
       <pre style="width: 100%">{{ completeNodeValue }}</pre>
     </a-modal>
   </div>
 </template>
-
 
 <style scoped>
 .json-schema-editor .row {
@@ -519,8 +679,10 @@ defineExpose({
 .json-schema-editor-advanced-modal .ant-advanced-search-form .ant-form-item {
   display: flex;
 }
-.json-schema-editor-advanced-modal .ant-advanced-search-form .ant-form-item .ant-form-item-control-wrapper {
+.json-schema-editor-advanced-modal
+  .ant-advanced-search-form
+  .ant-form-item
+  .ant-form-item-control-wrapper {
   flex: 1;
 }
-
 </style>
