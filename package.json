@@ -1,7 +1,7 @@
 {
   "name": "vue3-json-schema-editor-ts",
   "version": "1.0.0",
-  "author": "abc-cat",
+  "author": "qinchao2",
   "description": "A json-schema editor of high efficient and easy-to-use, base on Vue3",
   "keywords": [
     "jsonschema",
@@ -12,7 +12,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/cnmmg/ts-json-schema-editor-vue3/tree/master"
+    "url": "https://github.com/abc-cat/ts-json-schema-editor-vue3/tree/master"
   },
   "license": "MIT",
   "main": "dist/ts-json-schema-editor-vue3.umd.js",
