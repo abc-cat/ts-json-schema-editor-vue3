@@ -1,7 +1,7 @@
 {
   "name": "ts-json-schema-editor-vue3",
   "version": "1.0.0",
-  "author": "cnmmg",
+  "author": "abc-cat",
   "description": "A json-schema editor of high efficient and easy-to-use, base on Vue3",
   "keywords": [
     "jsonschema",
