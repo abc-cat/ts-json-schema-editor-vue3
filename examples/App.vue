@@ -1,7 +1,9 @@
 <template>
   <div id="app">
     <div class="title">
-      <a href="https://github.com/zyqwst/json-schema-editor-vue" target="_blank"
+      <a
+        href="https://github.com/abc-cat/ts-json-schema-editor-vue3/tree/master"
+        target="_blank"
         >json-schema-editor-vue</a
       >
       Preview
