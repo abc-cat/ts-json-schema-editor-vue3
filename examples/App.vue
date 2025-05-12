@@ -4,7 +4,7 @@
       <a
         href="https://github.com/abc-cat/ts-json-schema-editor-vue3/tree/master"
         target="_blank"
-        >json-schema-editor-vue</a
+        >vue3-json-schema-editor-ts</a
       >
       Preview
     </div>

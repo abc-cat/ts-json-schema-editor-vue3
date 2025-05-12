@@ -157,7 +157,7 @@ const completeNodeValue = computed(() => {
 //   if (!t.length) return '';
 //   return t.join('\n');
 // });
-
+const labelCol = { style: { width: "100px" } };
 const getEnumText = () => {
   const t = (advancedValue.value as { enum?: string[] })["enum"];
   if (!t) return "";
@@ -219,8 +219,9 @@ const onRootCheck = (e: CheckboxChangeEvent) => {
 };
 
 const changeEnumValue = (e: Event) => {
-  const pickType = pickValue.value.type;
   const value = (e.target as HTMLInputElement).value;
+  if (!value) return;
+  const pickType = pickValue.value.type;
   const arr = value.split("\n");
 
   // 使用类型断言来临时将 advancedValue.value 视为一个更宽泛的类型
@@ -406,7 +407,7 @@ defineExpose({
   <div class="json-schema-editor">
     <div class="item">
       <ARow class="row" :gutter="10">
-        <ACol :span="10" class="ant-col-name">
+        <ACol :span="8" class="ant-col-name">
           <div :style="{ marginLeft: `${20 * deep}px` }" class="ant-col-name-c">
             <AButton
               v-if="pickValue.type === 'object'"
@@ -448,7 +449,7 @@ defineExpose({
         </ACol>
         <!-- alias -->
         <template v-if="props.hasAlias">
-          <ACol :span="4" class="ant-col-name-required">
+          <ACol :span="6" class="ant-col-name-required">
             <AInput
               :disabled="root"
               v-model:value="pickValue.alias"
@@ -588,8 +589,9 @@ defineExpose({
                   :key="t"
                   v-for="t in advancedAttr[key].enums"
                   :value="t"
-                  >{{ t }}</ASelectOption
                 >
+                  {{ t }}
+                </ASelectOption>
               </ASelect>
               <AInput
                 v-model:value="advancedValue[key]"
@@ -602,40 +604,44 @@ defineExpose({
         </ARow>
       </AForm>
       <h3 v-show="custom">{{ local["add_custom"] }}</h3>
-      <AForm class="ant-advanced-search-form" v-show="custom">
+      <AForm
+        class="ant-advanced-search-form"
+        v-show="custom"
+        :label-col="labelCol"
+      >
         <ARow :gutter="6">
-          <ACol :span="8" v-for="item in customProps" :key="item.key">
+          <ACol :span="10" v-for="item in customProps" :key="item.key">
             <AFormItem :label="item.key">
-              <AInput
-                v-model:value="item.value"
-                style="width: calc(100% - 30px)"
-              />
-              <AButton
-                type="link"
-                @click="removeCustomNode(item.key)"
-                style="width: 30px"
-              >
-                <close-outlined />
-              </AButton>
+              <div style="display: flex; align-items: center">
+                <AInput
+                  v-model:value="item.value"
+                  style="width: calc(100% - 30px)"
+                />
+                <AButton
+                  type="link"
+                  @click="removeCustomNode(item.key)"
+                  style="width: 30px"
+                >
+                  <close-outlined />
+                </AButton>
+              </div>
             </AFormItem>
           </ACol>
-          <ACol :span="8" v-show="addProp.key !== undefined">
+          <ACol :span="10" v-show="addProp.key !== undefined">
             <AFormItem>
-              <template #label
-                ><AInput v-model:value="addProp.key" style="width: 100px"
-              /></template>
+              <template #label>
+                <AInput v-model:value="addProp.key" style="width: 100px" />
+              </template>
               <AInput v-model:value="addProp.value" style="width: 100%" />
             </AFormItem>
           </ACol>
-          <ACol :span="8">
+          <ACol :span="2">
             <AFormItem>
-              <AButton
-                type="link"
-                @click="confirmAddCustomNode(null)"
-                v-if="customing"
-              >
-                <check-outlined />
-              </AButton>
+              <ATooltip :title="local['add_confirm']" v-if="customing">
+                <AButton type="link" @click="confirmAddCustomNode(null)">
+                  <check-outlined />
+                </AButton>
+              </ATooltip>
               <ATooltip :title="local['add_custom']" v-else>
                 <AButton type="link" @click="addCustomNode">
                   <plus-outlined />
@@ -724,5 +730,8 @@ defineExpose({
   .ant-form-item
   .ant-form-item-control-wrapper {
   flex: 1;
+}
+.custom-row {
+  display: flex;
 }
 </style>

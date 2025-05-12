@@ -40,6 +40,7 @@ interface Langs {
     nothing: string;
     preview: string;
     add_custom: string;
+    add_confirm: string;
 }
 
 export interface LangsMap {
@@ -89,6 +90,7 @@ const langs: LangsMap = {
         nothing: 'Nothing',
         preview: 'Preview',
         add_custom: 'Add Custom Prop',
+        add_confirm: 'Confirm to add custom prop'
     },
     zh_CN: {
         title: '标题',
@@ -131,7 +133,8 @@ const langs: LangsMap = {
         format: '格式化',
         nothing: '无',
         preview: '预览',
-        add_custom: '添加自定义属性'
+        add_custom: '添加自定义属性',
+        add_confirm: '确定添加自定义属性'
     }
 }
 

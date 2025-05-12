@@ -2,9 +2,9 @@
   <a href="http://json-schema.sviip.com/" target="_blank">json-schema-editor-vue</a>
 </h1>
 
-[![Start](https://img.shields.io/github/stars/zyqwst/json-schema-editor-vue?style=social)](https://github.com/zyqwst/json-schema-editor-vue/stargazers)
-[![Fork](https://img.shields.io/github/forks/zyqwst/json-schema-editor-vue?style=social)](https://github.com/zyqwst/json-schema-editor-vue/fork)
-[![GitHub open issues](https://img.shields.io/github/issues/zyqwst/json-schema-editor-vue.svg)](https://github.com/zyqwst/json-schema-editor-vue/issues?q=is%3Aopen+is%3Aissue)
+[![Start](https://img.shields.io/github/stars/zyqwst/json-schema-editor-vue?style=social)](https://github.com/abc-cat/ts-json-schema-editor-vue3/stargazers)
+[![Fork](https://img.shields.io/github/forks/zyqwst/json-schema-editor-vue?style=social)](https://github.com/abc-cat/ts-json-schema-editor-vue3/fork)
+[![GitHub open issues](https://img.shields.io/github/issues/zyqwst/json-schema-editor-vue.svg)](https://github.com/abc-cat/ts-json-schema-editor-vue3/issues?q=is%3Aopen+is%3Aissue)
 [![npm download](https://img.shields.io/npm/dt/json-schema-editor-vue.svg?maxAge=30)](https://www.npmjs.com/package/json-schema-editor-vue)
 [![npm download per month](https://img.shields.io/npm/dm/json-schema-editor-vue.svg)](https://www.npmjs.com/package/json-schema-editor-vue)
 [![npm version](https://img.shields.io/npm/v/json-schema-editor-vue.svg)](https://www.npmjs.com/package/json-schema-editor-vue)
@@ -12,7 +12,7 @@
 
 A json-schema editor of high efficient and easy-to-use, base on Vue3
 
-### 如果你使用Vue2,请查看 [json-schema-editor base on Vue2](https://github.com/zyqwst/json-schema-editor-vue)
+### 如果你使用Vue2,请查看原作者项目 [json-schema-editor base on Vue2](https://github.com/zyqwst/json-schema-editor-vue)
 
 <p align="center">
   <img width="100%" src="https://github.com/zyqwst/json-schema-editor-vue/raw/master/examples/assets/capture.png">
@@ -30,15 +30,13 @@ A json-schema editor of high efficient and easy-to-use, base on Vue3
 ### Usage
 
 ```bash
-# vue2
-npm install json-schema-editor-vue
 # vue3 
-npm install json-schema-editor-vue3
+npm install vue3-json-schema-editor-ts
 ```
 
 ```vue
-import JsonSchemaEditor from 'json-schema-editor-vue'
-import 'json-schema-editor-vue/lib/json-schema-editor-vue.css'
+import JsonSchemaEditor from 'vue3-json-schema-editor-ts'
+import 'vue3-json-schema-editor-ts/dist/style.css'
 Vue.use(JsonSchemaEditor)
 ```
 
