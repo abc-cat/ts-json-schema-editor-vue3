@@ -1,6 +1,6 @@
 {
   "name": "vue3-json-schema-editor-ts",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "qinchao2",
   "description": "A json-schema editor of high efficient and easy-to-use, base on Vue3",
   "keywords": [
