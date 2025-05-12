@@ -72,6 +72,7 @@ export default {
 |属性|说明|类型|是否必须|默认值|
 :-|:-|:-|:-|:-
 |value|传入一个默认的树节点，用来接收编辑后的json schema结果|Object|是||
+|hasAlias|title后增加别名列，用于function call或其他场景
 |disabled|节点名称不可编辑|Boolean||`false`|
 |disabledType|节点类型不可选择|Boolean||`false`|
 |root|是否是根节点|Boolean||`true`|

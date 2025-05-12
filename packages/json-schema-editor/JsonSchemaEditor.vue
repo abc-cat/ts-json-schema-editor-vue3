@@ -31,6 +31,10 @@ import { LangsMap } from "./LocalProvider";
 import LocalProvider from "./LocalProvider";
 
 const props = defineProps({
+  hasAlias: {
+    type: Boolean,
+    default: false,
+  },
   value: {
     type: Object,
     required: true,
@@ -90,6 +94,7 @@ const pickValue = computed(
     Object.values(props.value)[0] as {
       type: keyof ITypeMap;
       title?: string;
+      alias?: string;
       properties?: Record<string, unknown>;
       items?: { type: string; [key: string]: unknown };
     }
@@ -178,11 +183,19 @@ const onInputName = (e: Event) => {
   }
 };
 
+const onInputAlias = (e: Event) => {
+  const value = (e.target as HTMLInputElement).value;
+  pickValue.value.alias = value;
+};
+
 const onChangeType = () => {
   parseCustomProps();
   const value = pickValue.value as Record<string, unknown>; // 临时断言为更宽泛的类型
   customProps.value.forEach((item) => {
-    delete value[item.key];
+    // 切换type保留alias
+    if (item.key !== "alias") {
+      delete value[item.key];
+    }
   });
   customProps.value = [];
 
@@ -391,70 +404,84 @@ defineExpose({
 
 <template>
   <div class="json-schema-editor">
-    <ARow class="row" :gutter="10">
-      <ACol :span="8" class="ant-col-name">
-        <div :style="{ marginLeft: `${20 * deep}px` }" class="ant-col-name-c">
-          <AButton
-            v-if="pickValue.type === 'object'"
-            type="link"
-            style="color: rgba(0, 0, 0, 0.65)"
-            @click="hidden = !hidden"
+    <div class="item">
+      <ARow class="row" :gutter="10">
+        <ACol :span="10" class="ant-col-name">
+          <div :style="{ marginLeft: `${20 * deep}px` }" class="ant-col-name-c">
+            <AButton
+              v-if="pickValue.type === 'object'"
+              type="link"
+              style="color: rgba(0, 0, 0, 0.65)"
+              @click="hidden = !hidden"
+            >
+              <template #icon>
+                <caret-right-outlined v-if="hidden" />
+                <caret-down-outlined v-else />
+              </template>
+            </AButton>
+            <span v-else style="width: 32px; display: inline-block"></span>
+            <AInput
+              :disabled="disabled || root"
+              :default-value="pickKey"
+              class="ant-col-name-input"
+              @blur="onInputName"
+              :key="pickValue"
+            />
+          </div>
+          <ATooltip v-if="root">
+            <template v-slot:title>{{ local["checked_all"] }}</template>
+            <ACheckbox
+              :disabled="!isObject && !isArray"
+              class="ant-col-name-required"
+              @change="onRootCheck"
+            />
+          </ATooltip>
+          <ATooltip v-else>
+            <template v-slot:title>{{ local["required"] }}</template>
+            <ACheckbox
+              :disabled="isItem"
+              :checked="checked"
+              class="ant-col-name-required"
+              @change="onCheck"
+            />
+          </ATooltip>
+        </ACol>
+        <!-- alias -->
+        <template v-if="props.hasAlias">
+          <ACol :span="4" class="ant-col-name-required">
+            <AInput
+              :disabled="root"
+              v-model:value="pickValue.alias"
+              class="ant-col-name-input"
+              :placeholder="local['alias']"
+              @blur="onInputAlias"
+            />
+          </ACol>
+        </template>
+        <ACol :span="props.hasAlias ? 4 : 6">
+          <ASelect
+            v-model:value="pickValue.type"
+            :disabled="disabledType"
+            class="ant-col-type"
+            @change="onChangeType"
+            :getPopupContainer="
+              (triggerNode) => triggerNode.parentNode || document.body
+            "
           >
-            <template #icon>
-              <caret-right-outlined v-if="hidden" />
-              <caret-down-outlined v-else />
-            </template>
-          </AButton>
-          <span v-else style="width: 32px; display: inline-block"></span>
+            <ASelectOption :key="t" v-for="t in TYPE_NAME" :value="t">
+              {{ t }}
+            </ASelectOption>
+          </ASelect>
+        </ACol>
+        <ACol :span="props.hasAlias ? 6 : 8">
           <AInput
-            :disabled="disabled || root"
-            :default-value="pickKey"
-            class="ant-col-name-input"
-            @blur="onInputName"
-            :key="pickValue"
+            v-model:value="pickValue.title"
+            class="ant-col-title"
+            :placeholder="local['title']"
           />
-        </div>
-        <ATooltip v-if="root">
-          <template v-slot:title>{{ local["checked_all"] }}</template>
-          <ACheckbox
-            :disabled="!isObject && !isArray"
-            class="ant-col-name-required"
-            @change="onRootCheck"
-          />
-        </ATooltip>
-        <ATooltip v-else>
-          <template v-slot:title>{{ local["required"] }}</template>
-          <ACheckbox
-            :disabled="isItem"
-            :checked="checked"
-            class="ant-col-name-required"
-            @change="onCheck"
-          />
-        </ATooltip>
-      </ACol>
-      <ACol :span="4">
-        <ASelect
-          v-model:value="pickValue.type"
-          :disabled="disabledType"
-          class="ant-col-type"
-          @change="onChangeType"
-          :getPopupContainer="
-            (triggerNode) => triggerNode.parentNode || document.body
-          "
-        >
-          <ASelectOption :key="t" v-for="t in TYPE_NAME" :value="t">{{
-            t
-          }}</ASelectOption>
-        </ASelect>
-      </ACol>
-      <ACol :span="6">
-        <AInput
-          v-model:value="pickValue.title"
-          class="ant-col-title"
-          :placeholder="local['title']"
-        />
-      </ACol>
-      <ACol :span="6" class="ant-col-setting">
+        </ACol>
+      </ARow>
+      <div class="ant-col-setting">
         <ATooltip>
           <template v-slot:title>{{ local["adv_setting"] }}</template>
           <AButton type="link" class="setting-icon" @click="onSetting">
@@ -477,8 +504,9 @@ defineExpose({
             <close-outlined />
           </AButton>
         </ATooltip>
-      </ACol>
-    </ARow>
+      </div>
+    </div>
+
     <template v-if="!hidden && pickValue.properties && !isArray">
       <json-schema-editor
         v-for="(item, key, index) in pickValue.properties"
@@ -490,6 +518,7 @@ defineExpose({
         class="children"
         :lang="lang"
         :custom="custom"
+        :has-alias="props.hasAlias"
       />
     </template>
     <template v-if="isArray">
@@ -502,10 +531,11 @@ defineExpose({
         class="children"
         :lang="lang"
         :custom="custom"
+        :has-alias="props.hasAlias"
       />
     </template>
     <a-modal
-      v-model:visible="modalVisible"
+      v-model:open="modalVisible"
       v-if="modalVisible"
       :title="local['adv_setting']"
       :maskClosable="false"
@@ -622,15 +652,23 @@ defineExpose({
 </template>
 
 <style scoped>
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 .json-schema-editor .row {
+  flex: 1;
   display: flex;
   margin: 12px;
 }
 .json-schema-editor .row .ant-col-name {
   display: flex;
   align-items: center;
+  padding-left: 5px;
 }
 .json-schema-editor .row .ant-col-name .ant-col-name-c {
+  flex: 1;
   display: flex;
   align-items: center;
 }
@@ -642,7 +680,9 @@ defineExpose({
 .json-schema-editor .row .ant-col-type {
   width: 100%;
 }
-.json-schema-editor .row .ant-col-setting {
+.json-schema-editor .ant-col-setting {
+  width: 130px;
+  padding-left: 10px;
   display: inline-block;
 }
 .json-schema-editor .row .setting-icon {

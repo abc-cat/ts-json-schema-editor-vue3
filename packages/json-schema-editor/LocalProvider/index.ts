@@ -1,5 +1,6 @@
 interface Langs {
     title: string;
+    alias: string;
     import_json: string;
     base_setting: string;
     all_setting: string;
@@ -48,6 +49,7 @@ export interface LangsMap {
 const langs: LangsMap = {
     en_US: {
         title: 'Title',
+        alias: 'Alias',
         import_json: 'Import JSON',
         base_setting: 'Base Setting',
         all_setting: 'Source Code',
@@ -90,6 +92,7 @@ const langs: LangsMap = {
     },
     zh_CN: {
         title: '标题',
+        alias: '别名',
         import_json: '导入 json',
         base_setting: '基础设置',
         all_setting: '编辑源码',
