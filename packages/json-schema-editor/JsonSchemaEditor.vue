@@ -657,7 +657,7 @@ defineExpose({
   </div>
 </template>
 
-<style scoped>
+<style lang="css" scoped>
 .item {
   display: flex;
   align-items: center;

@@ -31,6 +31,9 @@
 <script>
 import GenerateSchema from "generate-schema";
 import JsonSchemaEditor from "../packages/index";
+// import JsonSchemaEditor from "../dist/vue3-json-schema-editor-ts.es.js";
+// import '../dist/vue3-json-schema-editor-ts/dist/style.css';
+
 export default {
   name: "App",
   components: {
